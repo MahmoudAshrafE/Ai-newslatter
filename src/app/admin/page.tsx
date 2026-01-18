@@ -6,7 +6,17 @@ import ModernLoader from '@/components/ui/ModernLoader'
 import PerformanceChart from '@/components/PerformanceChart'
 
 export default function AdminDashboard() {
-    const [stats, setStats] = useState({ users: 0, newsletters: 0, subscriptions: 0 })
+    const [stats, setStats] = useState({
+        users: 0,
+        newsletters: 0,
+        subscriptions: 0,
+        accounts: 0,
+        rssFeeds: 0,
+        drafts: 0,
+        sent: 0,
+        newUsers: 0,
+        chartData: []
+    })
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
@@ -37,46 +47,66 @@ export default function AdminDashboard() {
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
             <h1 className="text-4xl font-bold mb-8 text-white">System Overview</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {/* Users Card */}
                 <div className="p-6 rounded-3xl bg-slate-900 border border-white/5 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                         <Users className="w-24 h-24 text-blue-500" />
                     </div>
                     <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">Total Users</p>
                     <p className="text-4xl font-black text-white">{stats.users}</p>
-                    <p className="text-emerald-400 text-xs font-bold mt-2 flex items-center gap-1">
-                        <Activity className="w-3 h-3" /> Active Database Records
+                    <p className="text-blue-400 text-xs font-bold mt-2 flex items-center gap-1">
+                        <Activity className="w-3 h-3" /> +{stats.newUsers} New (30d)
                     </p>
                 </div>
 
+                {/* Newsletters Card */}
                 <div className="p-6 rounded-3xl bg-slate-900 border border-white/5 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                         <FileText className="w-24 h-24 text-purple-500" />
                     </div>
-                    <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">Newsletters Generated</p>
+                    <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">Generated Content</p>
                     <p className="text-4xl font-black text-white">{stats.newsletters}</p>
-                    <p className="text-purple-400 text-xs font-bold mt-2 flex items-center gap-1">
-                        <Activity className="w-3 h-3" /> Content Creation
-                    </p>
+                    <div className="flex gap-3 mt-2">
+                        <p className="text-indigo-400 text-xs font-bold flex items-center gap-1">
+                            Drafts: {stats.drafts}
+                        </p>
+                        <p className="text-purple-400 text-xs font-bold flex items-center gap-1">
+                            Sent: {stats.sent}
+                        </p>
+                    </div>
                 </div>
 
+                {/* Subscriptions Card */}
                 <div className="p-6 rounded-3xl bg-slate-900 border border-white/5 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                         <Crown className="w-24 h-24 text-amber-500" />
                     </div>
-                    <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">Pro Subscriptions</p>
+                    <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">Pro Users</p>
                     <p className="text-4xl font-black text-white">{stats.subscriptions}</p>
                     <p className="text-amber-400 text-xs font-bold mt-2 flex items-center gap-1">
-                        <Activity className="w-3 h-3" /> Revenue Stream
+                        Active Subscriptions
+                    </p>
+                </div>
+
+                {/* RSS Feeds Card */}
+                <div className="p-6 rounded-3xl bg-slate-900 border border-white/5 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Activity className="w-24 h-24 text-emerald-500" />
+                    </div>
+                    <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">RSS Sources</p>
+                    <p className="text-4xl font-black text-white">{stats.rssFeeds}</p>
+                    <p className="text-emerald-400 text-xs font-bold mt-2 flex items-center gap-1">
+                        Active Feeds
                     </p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="p-8 rounded-3xl bg-slate-900 border border-white/5">
-                    <h3 className="text-xl font-bold text-white mb-6">Growth Analytics</h3>
+                    <h3 className="text-xl font-bold text-white mb-6">Newsletter Generation (30d)</h3>
                     <div className="h-64 w-full">
-                        <PerformanceChart />
+                        <PerformanceChart data={stats.chartData} />
                     </div>
                 </div>
 
@@ -84,16 +114,16 @@ export default function AdminDashboard() {
                     <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4">
                         <Activity className="w-8 h-8 text-slate-500" />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">System Health</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">System Status</h3>
                     <p className="text-slate-400 max-w-sm">
-                        All systems operational. Database latency is normal. API response times are optimal.
+                        Database connection is stable. API endpoints are responsive.
                     </p>
                     <div className="mt-8 flex gap-4">
                         <div className="px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
-                            Database: Healthy
+                            Database: Online
                         </div>
-                        <div className="px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
-                            API: Online
+                        <div className="px-4 py-2 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20">
+                            Accounts: {stats.accounts}
                         </div>
                     </div>
                 </div>
