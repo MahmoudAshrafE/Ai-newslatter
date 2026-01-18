@@ -5,7 +5,7 @@ import { NextResponse } from "next/server"
 export async function GET() {
     const session = await auth()
 
-    if (session?.user?.role !== "ADMIN") {
+    if (session?.user?.role?.toUpperCase() !== "ADMIN") {
         return new NextResponse("Unauthorized", { status: 401 })
     }
 
