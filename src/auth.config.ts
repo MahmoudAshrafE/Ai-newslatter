@@ -9,6 +9,13 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user
             const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
+            const isOnAdmin = nextUrl.pathname.startsWith('/admin')
+            const userRole = auth?.user?.role
+
+            if (isOnAdmin) {
+                if (isLoggedIn && userRole?.toUpperCase() === 'ADMIN') return true
+                return false // Redirect non-admins
+            }
 
             if (isOnDashboard) {
                 if (isLoggedIn) return true
@@ -24,11 +31,13 @@ export const authConfig = {
             if (user) {
                 token.id = user.id
                 token.name = user.name
+                token.role = (user as any).role
                 token.image = (user as any).image
             }
             if (trigger === "update" && session) {
                 token.name = session.user.name
                 token.image = session.user.image
+                token.role = session.user.role
             }
             return token
         },
@@ -36,6 +45,7 @@ export const authConfig = {
             if (token && session.user) {
                 session.user.id = token.id as string
                 session.user.name = token.name as string
+                session.user.role = token.role as string
                 session.user.image = token.image as string
             }
             return session

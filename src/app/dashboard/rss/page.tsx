@@ -6,6 +6,7 @@ import { Plus, Rss, Trash2, Loader2, Wand2, Check, ExternalLink, Layout, Type, P
 import Modal from '@/components/ui/Modal'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import ModernLoader from '@/components/ui/ModernLoader'
 
 interface RssFeed {
     id: string
@@ -183,7 +184,7 @@ export default function RssDashboard() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-12 h-12 text-cyan-500 animate-spin" />
+                <ModernLoader size="md" />
             </div>
         )
     }

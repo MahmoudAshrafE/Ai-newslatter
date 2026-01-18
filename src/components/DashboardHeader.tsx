@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mail, Bell, User, Settings, LogOut, Home, FileText, Plus, Check, Trash2, Crown, Menu, X } from 'lucide-react'
+import { Mail, Bell, User, Settings, LogOut, Home, FileText, Plus, Check, Trash2, Crown, Menu, X, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
@@ -98,6 +98,10 @@ export default function DashboardHeader() {
         { name: 'Plans', href: '/pricing', icon: <Crown className="w-5 h-5 text-amber-500" /> },
         { name: 'Settings', href: '/dashboard/settings', icon: <Settings className="w-5 h-5" /> },
     ]
+
+    if (session?.user?.role?.toUpperCase() === 'ADMIN') {
+        navLinks.push({ name: 'Admin Panel', href: '/admin', icon: <Shield className="w-5 h-5 text-red-500" /> })
+    }
 
     return (
         <nav className="sticky top-0 z-40">
@@ -291,7 +295,9 @@ export default function DashboardHeader() {
                     <div className="flex items-center gap-3">
                         <div className="text-right hidden sm:block">
                             <p className="text-sm font-bold text-white">{session?.user?.name || 'User'}</p>
-                            <p className="text-xs text-slate-500">{session?.user?.email || 'Free Plan'}</p>
+                            <p className="text-xs text-slate-500">
+                                {session?.user?.role?.toUpperCase() === 'ADMIN' ? 'Admin Access' : (session?.user?.email || 'Free Plan')}
+                            </p>
                         </div>
                         <div className="relative group">
                             <button
@@ -368,7 +374,7 @@ export default function DashboardHeader() {
                             <h3 className="text-2xl font-bold text-white">{session?.user?.name || 'Welcome!'}</h3>
                             <p className="text-slate-400 font-medium">{session?.user?.email}</p>
                             <span className="inline-block mt-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
-                                Free Plan
+                                {session?.user?.role || 'Free Plan'}
                             </span>
                         </div>
                     </div>
