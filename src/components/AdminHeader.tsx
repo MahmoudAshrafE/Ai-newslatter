@@ -74,7 +74,7 @@ export default function AdminHeader() {
                                     </Link>
                                     <div className="h-px bg-white/5 my-1 mx-2" />
                                     <button
-                                        onClick={() => signOut({ callbackUrl: '/' })}
+                                        onClick={() => signOut({ callbackUrl: window.location.origin })}
                                         className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-400/5 rounded-lg transition-colors"
                                     >
                                         <LogOut className="w-4 h-4" /> Sign Out
