@@ -42,6 +42,25 @@ export default function UsersPage() {
         (user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase()))
     )
 
+    const handleDelete = async (userId: string) => {
+        if (!confirm("Are you sure you want to delete this user? This action cannot be undone and will delete all their newsletters.")) return
+
+        try {
+            const res = await fetch(`/api/admin/users/${userId}`, {
+                method: 'DELETE'
+            })
+
+            if (res.ok) {
+                setUsers(prev => prev.filter(u => u.id !== userId))
+            } else {
+                alert("Failed to delete user")
+            }
+        } catch (error) {
+            console.error(error)
+            alert("An error occurred")
+        }
+    }
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
@@ -78,7 +97,8 @@ export default function UsersPage() {
                                 <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest pl-8">User</th>
                                 <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Role</th>
                                 <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Joined</th>
-                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right pr-8">Activity</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Activity</th>
+                                <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right pr-8">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -113,9 +133,18 @@ export default function UsersPage() {
                                             {new Date(user.createdAt).toLocaleDateString()}
                                         </p>
                                     </td>
-                                    <td className="p-4 text-right pr-8">
+                                    <td className="p-4 text-right">
                                         <p className="text-white font-bold">{user._count.newsletters}</p>
                                         <p className="text-[10px] text-slate-500 uppercase">Newsletters</p>
+                                    </td>
+                                    <td className="p-4 text-right pr-8">
+                                        <button
+                                            onClick={() => handleDelete(user.id)}
+                                            className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                            title="Delete User"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
